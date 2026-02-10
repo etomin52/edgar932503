@@ -1,31 +1,27 @@
 #include <iostream>
+#include <cmath>
 
-// Lab 07
-// TODO: реализуйте решение по заданию в labs/lab07_console/README.md
-//
-// Рекомендация по выводу:
-// - без лишнего текста
-// - числа через пробел
-// - если несколько строк — в фиксированном порядке
+double f(double x) {
+    return sin(x) / x;
+}
+
 int main() {
-    // Задание 1: вычисление значений функции.
-    // Ввод: x0 — начальная точка интервала.
-    double x0 = 0.0;
-    if (!(std::cin >> x0)) {
-        return 0;
-    }
-    // dfdfdf
-    // // dfd/df
-    // /dfdfd
-    // TODO: вычислите и выведите 10 значений функции на (0, 4].
+    double x0;
+    std::cin >> x0;
 
-    // Задание 2: сумма чисел Фибоначчи.
-    // Ввод: MAX — ограничение на сумму.
-    long long max_value = 0;
-    if (!(std::cin >> max_value)) {
-        return 0;
+    if (x0 <= 0 || x0 > 4) {
+        std::cout << "error\n";
+        return 1;
     }
 
-    // TODO: вычислите N и S (S <= MAX) и выведите результаты.
+    const int N = 10;
+    const double x_end = 4.0;
+    double step = (x_end - x0) / (N - 1);
+
+    for (int i = 0; i < N; ++i) {
+        double x = x0 + i * step;
+        std::cout << "x = " << x << ", f(x) = " << f(x) << "\n";
+    }
+
     return 0;
 }
