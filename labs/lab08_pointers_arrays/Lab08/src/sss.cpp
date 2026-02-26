@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <iostream>
 #include <windows.h>
-#include <algorithm>
 
 #define N 10
 
@@ -15,60 +14,67 @@ int main()
     int x = 5, y = 20;
     f(x, &y);
     cout << " 2.2)  " << x << " " << y << endl;
+
+
     printf("  \n");
 
     printf(" 1) StatMass indeks \n");
     int arr1[N] = { 0 };
-    for (int i = 0; i < N; i++) { arr1[i] = i * i; }
-    for (int i = 0; i < N; i++) { printf("%d ", arr1[i]); }
+    for (int i = 0; i < N; i++) {
+        arr1[i] = i * i;
+    }
+    for (int i = 0; i < N; i++) {
+        printf("%d ", arr1[i]);
+    }
 
     printf("\n 2) StatMass ukaz \n");
     int arr2[N] = { 0 };
-    for (int i = 0; i < N; i++) { *(arr2 + i) = i * i; }
-    for (int i = 0; i < N; i++) { printf("%d ", *(arr2 + i)); }
+    for (int i = 0; i < N; i++) {
+        *(arr2 + i) = i * i;
+    }
+    for (int i = 0; i < N; i++) {
+        printf("%d ", *(arr2 + i));
+    }
 
     printf("\n 3) DinMass indeks  \n");
     int* d1 = new int[N];
-    for (int i = 0; i < N; i++) { d1[i] = i * i; }
-    for (int i = 0; i < N; i++) { printf("%d ", d1[i]); }
+    for (int i = 0; i < N; i++) {
+        d1[i] = i * i;
+    }
+    for (int i = 0; i < N; i++) {
+        printf("%d ", d1[i]);
+    }
     delete[] d1;
 
     printf("\n 4) DinMass ukaz \n");
     int* d2 = new int[N];
     int* ptr = d2;
-    for (int i = 0; i < N; i++) { *(ptr + i) = i * i; }
+    for (int i = 0; i < N; i++) {
+        *(ptr + i) = i * i;
+    }
     ptr = d2;
-    for (int i = 0; i < N; i++) { printf("%d ", *(ptr + i)); }
+    for (int i = 0; i < N; i++) {
+        printf("%d ", *(ptr + i));
+    }
     delete[] d2;
 
-    printf("\n 3.2)\n");
+    printf("\n 3.2\n");
 
-    int size1 = 7;
-    int size2 = 8;
+    int size1 = 8;
+    int size2 = 7;
 
     int* darr1 = new int[size1];
     int* darr2 = new int[size2];
     int* res_arr = new int[size1 + size2];
 
     for (int i = 0; i < size1; i++) {
-        darr1[i] = rand() % 50;
+        darr1[i] = i * 2;
     }
+
     for (int i = 0; i < size2; i++) {
-        darr2[i] = rand() % 50;
+        darr2[i] = i * 2 + 1;
     }
 
-    sort(darr1, darr1 + size1);
-    sort(darr2, darr2 + size2);
-
-    printf("Mass 1 : ", size1);
-    for (int i = 0; i < size1; i++) printf("%d ", darr1[i]);
-    printf("\n");
-
-    printf("Mass 2 : ", size2);
-    for (int i = 0; i < size2; i++) printf("%d ", darr2[i]);
-    printf("\n");
-
-    // Алгоритм слияния встроен прямо сюда
     int i = 0, j = 0, k = 0;
 
     while (i < size1 && j < size2) {
@@ -92,9 +98,21 @@ int main()
         j++;
     }
 
-    printf("sliyanie: ", size1 + size2);
+    printf("\n 1): ");
+    for (int i = 0; i < size1; i++) {
+        printf("%d ", darr1[i]);
+    }
+    printf("\n");
+
+    printf(" 2): ");
+    for (int i = 0; i < size2; i++) {
+        printf("%d ", *(darr2 + i));
+    }
+    printf("\n");
+
+    printf(" obd mass: ");
     for (int i = 0; i < (size1 + size2); i++) {
-        printf("%d ", res_arr[i]);
+        printf("%d ", *(res_arr + i));
     }
     printf("\n");
 
@@ -115,6 +133,7 @@ void f(int& a, int* b) {
 void Exercise4()
 {
     printf("\n 4 \n");
+
     struct Node {
         int id;
         Node* next;
