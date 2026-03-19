@@ -1,58 +1,85 @@
 #include <iostream>
-using namespace std;
+#include <algorithm>
+#include <cstdlib>
+#include <ctime>
+// Lab 10
+// TODO: реализуйте решение по заданию в labs/lab10_functions/README.md
+//
+// Рекомендация по выводу:
+// - без лишнего текста
+// - числа через пробел
+// - если несколько строк — в фиксированном порядке
 
-const int Max_znach = 17;
-const int Kolvo_znach = 18;
-
-void pack(const int source[], int n, int packed[]) {
-    for (int i = 0; i < Kolvo_znach; i++) packed[i] = 0;
-    for (int i = 0; i < n; i++) packed[source[i]]++;
-}
-
-void unpack(const int packed[], int restored[], int n) {
-    int index = 0;
-    for (int val = 0; val < Kolvo_znach; val++) {
-        for (int count = 0; count < packed[val]; count++) {
-            restored[index++] = val;
+void komp(int arr[], int size, int d_komp[])
+{
+    for (int i = 0; i < 18; i++)
+    {
+        d_komp[i] = 0;
+    }
+    int i = 0, j = 0;
+    while (i < size)
+    {
+        if (arr[i] == j)
+        {
+            d_komp[j]++;
+            i++;
+        }
+        else
+        {
+            j++;
         }
     }
+
+
+    for (int i = 0; i < 18; i++) std::cout << d_komp[i] << " ";
+    std::cout << std::endl;
+}
+
+void unpac(int arr_1[], int size_1, int arr_2[], int size_2)
+{
+    for (int i = 0; i < size_2; i++) arr_2[i] = 0;
+
+    int i = 0, j = 0;
+    while (i < size_1)
+    {
+        if (arr_1[i] != 0)
+        {
+            arr_2[j] = i;
+            arr_1[i] -= 1;
+            j++;
+        }
+        else
+        {
+            i++;
+        }
+    }
+    for (int i = 0; i < size_2; i++) std::cout << arr_2[i] << " ";
+    std::cout << std::endl;
 }
 
 
-int main() {
-    const int N = 1000000;
-    int* original = new int[N];
-
-    int pos = 0;
-    for (int val = 0; val <= Max_znach; val++) {
-        int count = N / Kolvo_znach;
-
-        if (val < N % Kolvo_znach) count++;
-        for (int j = 0; j < count; j++) original[pos++] = val;
-    }
-
-
-
-    cout << "Ishod. massiv: " << N << " elementov, "
-        << N * sizeof(int) << " bt" << endl;
-
-    int packed[Kolvo_znach] = { 0 };
-    pack(original, N, packed);
-
-    cout << "Upakovano: " << Kolvo_znach << " elementov, "
-        << Kolvo_znach * sizeof(int) << " bt" << endl;
-
-
-
-    int* restored = new int[N];
-    unpack(packed, restored, N);
-
-    cout << "Raspakovano: " << N << " elementov, "
-        << N * sizeof(int) << " bt" << endl;
-
-
-    delete[] original;
-    delete[] restored;
-
+int main()
+{
+    srand(time(NULL));
+    int* d_ful;
+    int* d_komp;
+    d_komp = new int[18];
+    int size_ful = (rand() % 1000) + 1000;
+    d_ful = new int[size_ful]; //{17, 0, 1, 2, 3, 3, 3, 6, 10, 17};
+    for (int i = 0; i < size_ful; i++) d_ful[i] = rand() % 18;
+    std::sort(d_ful, d_ful + size_ful);
+    int s=sizeof(int)* size_ful;
+    
+    for (int i = 0; i < size_ful; i++) std::cout << d_ful[i] << " ";
+    std::cout << std::endl;
+    komp(d_ful, size_ful, d_komp);
+    int s1 = sizeof(int) * 18;
+    std::cout << s1 << std::endl;
+    std::cout << s << std::endl;
+    unpac(d_komp, 18, d_ful, size_ful);
+    delete[]d_ful;
+    delete[]d_komp;
+    std::cout << size_ful;
+    // TODO
     return 0;
 }
