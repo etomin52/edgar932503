@@ -5,12 +5,14 @@
 using namespace std;
 
 const double EPS = 1e-9;
+
 //вывод матрицы
 void printMatrix(double** a, int m, int n, ofstream& out) {
+    out << setprecision(6);
     for (int i = 0; i < m; i++) {
         for (int j = 0; j < n; j++) {
             if (j == n - 1) out << "| ";
-            out << setw(10) << fixed << setprecision(4) << a[i][j] << " ";
+            out << setw(12) << fixed << a[i][j] << " ";
         }
         out << endl;
     }
@@ -19,7 +21,7 @@ void printMatrix(double** a, int m, int n, ofstream& out) {
 int gaussTriangular(double** a, int m, int n) {
     int rank = 0;
     for (int col = 0; col < n && rank < m; col++) {
-        int maxRow = rank; //поиск вед эл
+        int maxRow = rank; //поиск большего модуля 
         for (int i = rank + 1; i < m; i++)
             if (abs(a[i][col]) > abs(a[maxRow][col]))
                 maxRow = i;
@@ -28,7 +30,7 @@ int gaussTriangular(double** a, int m, int n) {
 
         swap(a[maxRow], a[rank]);
 
-        double pivot = a[rank][col];
+        double pivot = a[rank][col]; //делим строчку на число 
         for (int j = col; j <= n; j++)
             a[rank][j] /= pivot;
 
@@ -44,9 +46,9 @@ int gaussTriangular(double** a, int m, int n) {
     return rank;
 }
 
-int main() {
-    ifstream in("input.txt");
-    ofstream out("output.txt");
+int main() { //вход в мейн 
+    ifstream in("input.txt"); //открываем файл для считвания
+    ofstream out("output.txt"); //открываем файл для записи
 
     int M, N;
     in >> M >> N;
@@ -65,7 +67,7 @@ int main() {
 
     out << "\nTREUGOLNAYA MATRICA:\n";
     printMatrix(a, M, N + 1, out);
-    out << "Rang: " << rank << ", Neizvestnyh: " << N << "\n\n";
+    out << "\nRang: " << rank << ", Neizvestnyh: " << N << "\n\n";
 
     bool noSolution = false; // проверка несовместимость 
     for (int i = rank; i < M; i++)
@@ -75,7 +77,7 @@ int main() {
         }
 
     if (noSolution) {
-        out << "Sistema nesovmestna (net reshenij)\n";
+        out << "net reshenij\n";
     }
     else if (rank < N) {
         out << "Edinstvennogo reshenija net (rang matricy " << rank
@@ -88,6 +90,7 @@ int main() {
         // ищем позиции для вед эл
         int* leadCol = new int[rank];
         for (int i = 0; i < rank; i++) {
+            leadCol[i] = -1;
             for (int j = 0; j < N; j++) {
                 if (abs(a[i][j]) > EPS) {
                     leadCol[i] = j;
@@ -99,6 +102,8 @@ int main() {
         // обр подстановка 
         for (int i = rank - 1; i >= 0; i--) {
             int col = leadCol[i];
+            if (col == -1) continue;
+
             x[col] = a[i][N];
             for (int j = col + 1; j < N; j++) {
                 x[col] -= a[i][j] * x[j];
@@ -106,7 +111,7 @@ int main() {
         }
 
         for (int i = 0; i < N; i++)
-            out << "x" << i + 1 << " = " << fixed << setprecision(4) << x[i] << endl;
+            out << "x" << i + 1 << " = " << fixed << setprecision(6) << x[i] << endl;
 
         delete[] x; //очистка массивов вспомогат. 
         delete[] leadCol;
