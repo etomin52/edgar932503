@@ -5,7 +5,7 @@
 using namespace std;
 
 const double EPS = 1e-9;
-
+//вывод матрицы
 void printMatrix(double** a, int m, int n, ofstream& out) {
     for (int i = 0; i < m; i++) {
         for (int j = 0; j < n; j++) {
@@ -16,21 +16,24 @@ void printMatrix(double** a, int m, int n, ofstream& out) {
     }
 }
 
-int gaussJordan(double** a, int m, int n) {
+int gaussTriangular(double** a, int m, int n) {
     int rank = 0;
     for (int col = 0; col < n && rank < m; col++) {
-        int maxRow = rank;
+        int maxRow = rank; //поиск вед эл
         for (int i = rank + 1; i < m; i++)
-            if (abs(a[i][col]) > abs(a[maxRow][col])) maxRow = i;
+            if (abs(a[i][col]) > abs(a[maxRow][col]))
+                maxRow = i;
 
         if (abs(a[maxRow][col]) < EPS) continue;
+
         swap(a[maxRow], a[rank]);
 
         double pivot = a[rank][col];
-        for (int j = col; j <= n; j++) a[rank][j] /= pivot;
+        for (int j = col; j <= n; j++)
+            a[rank][j] /= pivot;
 
-        for (int i = 0; i < m; i++) {
-            if (i != rank && abs(a[i][col]) > EPS) {
+        for (int i = rank + 1; i < m; i++) { //обнуление элементов ниже 
+            if (abs(a[i][col]) > EPS) {
                 double factor = a[i][col];
                 for (int j = col; j <= n; j++)
                     a[i][j] -= factor * a[rank][j];
@@ -42,33 +45,34 @@ int gaussJordan(double** a, int m, int n) {
 }
 
 int main() {
-    setlocale(LC_ALL, "Russian");
     ifstream in("input.txt");
     ofstream out("output.txt");
 
     int M, N;
     in >> M >> N;
 
-    //выд памяти 
-    double** a = new double* [M];
+    double** a = new double* [M]; // выделение памяти под матрицу 
     for (int i = 0; i < M; i++) {
         a[i] = new double[N + 1];
-        for (int j = 0; j <= N; j++) in >> a[i][j];
+        for (int j = 0; j <= N; j++)
+            in >> a[i][j];
     }
 
     out << "ISHODNAYA MATRICA:\n";
     printMatrix(a, M, N + 1, out);
 
-    int rank = gaussJordan(a, M, N);
+    int rank = gaussTriangular(a, M, N);
 
-    out << "\nPRIVEDENNAYA MATRICA:\n";
+    out << "\nTREUGOLNAYA MATRICA:\n";
     printMatrix(a, M, N + 1, out);
     out << "Rang: " << rank << ", Neizvestnyh: " << N << "\n\n";
 
-    //проверка на несовмест
-    bool noSolution = false;
+    bool noSolution = false; // проверка несовместимость 
     for (int i = rank; i < M; i++)
-        if (abs(a[i][N]) > EPS) { noSolution = true; break; }
+        if (abs(a[i][N]) > EPS) {
+            noSolution = true;
+            break;
+        }
 
     if (noSolution) {
         out << "Sistema nesovmestna (net reshenij)\n";
@@ -79,17 +83,37 @@ int main() {
     }
     else {
         out << "Edinstvennoe reshenie:\n";
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++)
+        double* x = new double[N]();
+
+        // ищем позиции для вед эл
+        int* leadCol = new int[rank];
+        for (int i = 0; i < rank; i++) {
+            for (int j = 0; j < N; j++) {
                 if (abs(a[i][j]) > EPS) {
-                    out << "x" << j + 1 << " = " << a[i][N] << endl;
+                    leadCol[i] = j;
                     break;
                 }
+            }
         }
+
+        // обр подстановка 
+        for (int i = rank - 1; i >= 0; i--) {
+            int col = leadCol[i];
+            x[col] = a[i][N];
+            for (int j = col + 1; j < N; j++) {
+                x[col] -= a[i][j] * x[j];
+            }
+        }
+
+        for (int i = 0; i < N; i++)
+            out << "x" << i + 1 << " = " << fixed << setprecision(4) << x[i] << endl;
+
+        delete[] x; //очистка массивов вспомогат. 
+        delete[] leadCol;
     }
 
-    //освобож памяти 
-    for (int i = 0; i < M; i++) delete[] a[i];
+    for (int i = 0; i < M; i++)
+        delete[] a[i]; // очистка матрицы
     delete[] a;
 
     cout << "Rezultat v output.txt\n";
